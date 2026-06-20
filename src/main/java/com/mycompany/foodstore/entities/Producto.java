@@ -12,6 +12,7 @@ public class Producto extends Base {
    public Producto(){
        super();
    }
+   
    public Producto(String nombre, double precio, String descripcion, int stock, String imagen, boolean disponible, Categoria categoria) {
         super();
         this.nombre = nombre;
