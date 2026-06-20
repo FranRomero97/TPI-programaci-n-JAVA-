@@ -1,1 +1,10 @@
+com\mycompany\foodstore\entities\Base.class
+com\mycompany\foodstore\dao\CategoriaDAO.class
+com\mycompany\foodstore\entities\Producto.class
+com\mycompany\foodstore\config\ConexionDB.class
+com\mycompany\foodstore\dao\IBaseDAO.class
+com\mycompany\foodstore\dao\ProductoDAO.class
+com\mycompany\foodstore\service\ProductoService.class
 com\mycompany\foodstore\FoodStore.class
+com\mycompany\foodstore\service\CategoriaService.class
+com\mycompany\foodstore\entities\Categoria.class

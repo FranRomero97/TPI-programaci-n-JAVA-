@@ -7,12 +7,13 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ProductoDAO implements IBaseDAO<Producto> {
 
     @Override
     public void guardar(Producto producto) throws Exception {
-        String sql = "INSERT INTO producto (nombre, precio, descripcion, stock, imagen, disponible, categoria_id, eliminado, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO productos (nombre, precio, descripcion, "
+                + "stock, imagen, disponible, categoria_id, eliminado, "
+                + "created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         try (Connection con = ConexionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -24,7 +25,6 @@ public class ProductoDAO implements IBaseDAO<Producto> {
             ps.setString(5, producto.getImagen());
             ps.setBoolean(6, producto.isDisponible());
             
-            // Pasamos el ID de la categoría asociada
             if (producto.getCategoria() != null) {
                 ps.setLong(7, producto.getCategoria().getId());
             } else {
@@ -32,7 +32,7 @@ public class ProductoDAO implements IBaseDAO<Producto> {
             }
             
             ps.setBoolean(8, producto.isEliminado());
-            ps.setTimestamp(9, Timestamp.valueOf(producto.getCreatedAt()));
+            ps.setTimestamp(9, java.sql.Timestamp.valueOf(producto.getCreatedAt()));
             
             ps.executeUpdate();
             
@@ -46,7 +46,7 @@ public class ProductoDAO implements IBaseDAO<Producto> {
 
     @Override
     public void actualizar(Producto producto) throws Exception {
-        String sql = "UPDATE producto SET nombre = ?, precio = ?, descripcion = ?, stock = ?, imagen = ?, disponible = ?, categoria_id = ? WHERE id = ? AND eliminado = false";
+        String sql = "UPDATE productos SET nombre = ?, precio = ?, descripcion = ?, stock = ?, imagen = ?, disponible = ?, categoria_id = ? WHERE id = ? AND eliminado = false";
         
         try (Connection con = ConexionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -72,7 +72,7 @@ public class ProductoDAO implements IBaseDAO<Producto> {
 
     @Override
     public void eliminarLogico(Long id) throws Exception {
-        String sql = "UPDATE producto SET eliminado = true WHERE id = ?";
+        String sql = "UPDATE productos SET eliminado = true WHERE id = ?";
         
         try (Connection con = ConexionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -84,7 +84,7 @@ public class ProductoDAO implements IBaseDAO<Producto> {
 
     @Override
     public Producto buscarPorId(Long id) throws Exception {
-        String sql = "SELECT * FROM producto WHERE id = ? AND eliminado = false";
+        String sql = "SELECT * FROM productos WHERE id = ? AND eliminado = false";
         Producto producto = null;
         
         try (Connection con = ConexionDB.getConnection();
@@ -98,13 +98,15 @@ public class ProductoDAO implements IBaseDAO<Producto> {
                     producto.setNombre(rs.getString("nombre"));
                     producto.setPrecio(rs.getDouble("precio"));
                     producto.setDescripcion(rs.getString("descripcion"));
-                    producto.setStock(rs.getShort("stock"));
+                    
+                    producto.setStock(rs.getInt("stock")); 
+                    
                     producto.setImagen(rs.getString("imagen"));
                     producto.setDisponible(rs.getBoolean("disponible"));
-                    producto.setEliminado(rs.getBoolean("eliminado"));
-                    producto.setCreatedAt(rs.getTimestamp("createdAt").toLocalDateTime());
+                    producto.setEliminado(rs.getBoolean("eliminado"));                
                     
-                    // Reconstruimos el objeto Categoria básico con el ID para la asociación
+                    producto.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                    
                     long catId = rs.getLong("categoria_id");
                     if (!rs.wasNull()) {
                         Categoria cat = new Categoria();
@@ -120,7 +122,7 @@ public class ProductoDAO implements IBaseDAO<Producto> {
     @Override
     public List<Producto> listarActivos() throws Exception {
         List<Producto> lista = new ArrayList<>();
-        String sql = "SELECT * FROM producto WHERE eliminado = false";
+        String sql = "SELECT * FROM productos WHERE eliminado = false";
         
         try (Connection con = ConexionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -136,7 +138,7 @@ public class ProductoDAO implements IBaseDAO<Producto> {
                 p.setImagen(rs.getString("imagen"));
                 p.setDisponible(rs.getBoolean("disponible"));
                 p.setEliminado(rs.getBoolean("eliminado"));
-                p.setCreatedAt(rs.getTimestamp("createdAt").toLocalDateTime());
+                p.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
                 
                 long catId = rs.getLong("categoria_id");
                 if (!rs.wasNull()) {
@@ -151,4 +153,3 @@ public class ProductoDAO implements IBaseDAO<Producto> {
         return lista;
     }
 }
-
