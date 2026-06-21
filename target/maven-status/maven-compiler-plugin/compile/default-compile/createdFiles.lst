@@ -9,9 +9,11 @@ com\mycompany\foodstore\entities\Pedido.class
 com\mycompany\foodstore\FoodStore.class
 com\mycompany\foodstore\service\CategoriaService.class
 com\mycompany\foodstore\entities\Categoria.class
+com\mycompany\foodstore\entities\Rol.class
 com\mycompany\foodstore\entities\Base.class
 com\mycompany\foodstore\ui\MenuCategoria.class
 com\mycompany\foodstore\ui\MenuProducto.class
+com\mycompany\foodstore\entities\Usuario.class
 com\mycompany\foodstore\ui\InvalidInputException.class
 com\mycompany\foodstore\entities\Estado.class
 com\mycompany\foodstore\entities\FormaPago.class
