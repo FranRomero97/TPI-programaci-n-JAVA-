@@ -10,7 +10,8 @@ public class CategoriaDAO implements IBaseDAO<Categoria> {
 
     @Override
     public void guardar(Categoria categoria) throws Exception {
-        String sql = "INSERT INTO categoria (nombre, descripcion, eliminado, createdAt) VALUES (?, ?, ?, ?)";
+        // CORREGIDO: categoria -> categorias
+        String sql = "INSERT INTO categorias (nombre, descripcion, eliminado, createdAt) VALUES (?, ?, ?, ?)";
         
         // El Try-with-resources asegura que la conexión y el statement se cierren solos al terminar
         try (Connection con = ConexionDB.getConnection();
@@ -34,7 +35,8 @@ public class CategoriaDAO implements IBaseDAO<Categoria> {
 
     @Override
     public void actualizar(Categoria categoria) throws Exception {
-        String sql = "UPDATE categoria SET nombre = ?, descripcion = ? WHERE id = ? AND eliminado = false";
+        // CORREGIDO: categoria -> categorias
+        String sql = "UPDATE categorias SET nombre = ?, descripcion = ? WHERE id = ? AND eliminado = false";
         
         try (Connection con = ConexionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -50,7 +52,8 @@ public class CategoriaDAO implements IBaseDAO<Categoria> {
     @Override
     public void eliminarLogico(Long id) throws Exception {
         // En lugar de borrar el registro, lo marcamos como eliminado
-        String sql = "UPDATE categoria SET eliminado = true WHERE id = ?";
+        // CORREGIDO: categoria -> categorias
+        String sql = "UPDATE categorias SET eliminado = true WHERE id = ?";
         
         try (Connection con = ConexionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -62,7 +65,8 @@ public class CategoriaDAO implements IBaseDAO<Categoria> {
 
     @Override
     public Categoria buscarPorId(Long id) throws Exception {
-        String sql = "SELECT * FROM categoria WHERE id = ? AND eliminado = false";
+        // CORREGIDO: categoria -> categorias
+        String sql = "SELECT * FROM categorias WHERE id = ? AND eliminado = false";
         Categoria categoria = null;
         
         try (Connection con = ConexionDB.getConnection();
@@ -86,7 +90,8 @@ public class CategoriaDAO implements IBaseDAO<Categoria> {
     @Override
     public List<Categoria> listarActivos() throws Exception {
         List<Categoria> lista = new ArrayList<>();
-        String sql = "SELECT * FROM categoria WHERE eliminado = false";
+        // CORREGIDO: categoria -> categorias
+        String sql = "SELECT * FROM categorias WHERE eliminado = false";
         
         try (Connection con = ConexionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
