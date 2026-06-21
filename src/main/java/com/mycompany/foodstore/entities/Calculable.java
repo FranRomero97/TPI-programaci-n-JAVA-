@@ -1,5 +1,5 @@
 package com.mycompany.foodstore.entities;
 
-public interface Calculable {
-    void calcularTotal();
-}
+public interface Calculable{
+    public void calcularTotal();
+    }
