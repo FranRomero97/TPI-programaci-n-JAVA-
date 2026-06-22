@@ -14,6 +14,11 @@ public class ProductoService {
   
     private final CategoriaDAO categoriaDAO = new CategoriaDAO();
 
+
+    public Producto buscarPorNombre(String nombre) throws Exception {
+    return productoDAO.buscarPorNombre(nombre);
+}
+
     public void guardarProducto(Producto producto) throws Exception {
 
         if (producto.getPrecio() < 0) {

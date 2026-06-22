@@ -60,11 +60,24 @@ public class MenuPedido extends MenuBase {
 
             boolean agregar = true;
 
+            System.out.println("\n--- PRODUCTOS DISPONIBLES ---");
+
+            List<Producto> productos = productoService.listarProductos();
+
+            for (Producto p : productos) {
+            System.out.println(
+                "ID: " + p.getId() +
+                " | NOMBRE: " + p.getNombre() +
+                " | PRECIO: " + p.getPrecio() +
+                " | STOCK: " + p.getStock()
+            );
+                }
+
             while (agregar) {
 
-                Long prodId = leerLong("ID producto");
+                String nombreProducto = pedirTexto("Nombre del producto");
 
-                Producto producto = productoService.buscarPorId(prodId);
+                Producto producto = productoService.buscarPorNombre(nombreProducto);
 
                 if (producto == null) {
                     System.out.println("Producto no encontrado.");

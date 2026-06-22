@@ -10,6 +10,7 @@ import java.util.List;
 
 public class ProductoDAO implements IBaseDAO<Producto> {
 
+    // ---------------- GUARDAR ----------------
     @Override
     public void guardar(Producto producto) throws Exception {
 
@@ -35,7 +36,6 @@ public class ProductoDAO implements IBaseDAO<Producto> {
 
             ps.setBoolean(8, producto.isEliminado());
 
-            // FIX: createdAt puede ser null
             if (producto.getCreatedAt() != null) {
                 ps.setTimestamp(9, Timestamp.valueOf(producto.getCreatedAt()));
             } else {
@@ -52,12 +52,13 @@ public class ProductoDAO implements IBaseDAO<Producto> {
         }
     }
 
+    // ---------------- ACTUALIZAR ----------------
     @Override
     public void actualizar(Producto producto) throws Exception {
 
         String sql = "UPDATE productos SET "
-                + "nombre = ?, precio = ?, descripcion = ?, stock = ?, imagen = ?, disponible = ?, categoria_id = ? "
-                + "WHERE id = ? AND eliminado = false";
+                + "nombre=?, precio=?, descripcion=?, stock=?, imagen=?, disponible=?, categoria_id=? "
+                + "WHERE id=? AND eliminado=false";
 
         try (Connection con = ConexionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -81,6 +82,7 @@ public class ProductoDAO implements IBaseDAO<Producto> {
         }
     }
 
+    // ---------------- ELIMINAR ----------------
     @Override
     public void eliminarLogico(Long id) throws Exception {
 
@@ -94,6 +96,7 @@ public class ProductoDAO implements IBaseDAO<Producto> {
         }
     }
 
+    // ---------------- BUSCAR POR ID ----------------
     @Override
     public Producto buscarPorId(Long id) throws Exception {
 
@@ -107,32 +110,7 @@ public class ProductoDAO implements IBaseDAO<Producto> {
             try (ResultSet rs = ps.executeQuery()) {
 
                 if (rs.next()) {
-
-                    Producto producto = new Producto();
-
-                    producto.setId(rs.getLong("id"));
-                    producto.setNombre(rs.getString("nombre"));
-                    producto.setPrecio(rs.getDouble("precio"));
-                    producto.setDescripcion(rs.getString("descripcion"));
-                    producto.setStock(rs.getInt("stock"));
-                    producto.setImagen(rs.getString("imagen"));
-                    producto.setDisponible(rs.getBoolean("disponible"));
-                    producto.setEliminado(rs.getBoolean("eliminado"));
-
-                    Timestamp ts = rs.getTimestamp("created_at");
-                    if (ts != null) {
-                        producto.setCreatedAt(ts.toLocalDateTime());
-                    }
-
-                    long catId = rs.getLong("categoria_id");
-
-                    if (!rs.wasNull()) {
-                        Categoria cat = new Categoria();
-                        cat.setId(catId);
-                        producto.setCategoria(cat);
-                    }
-
-                    return producto;
+                    return mapProducto(rs);
                 }
             }
         }
@@ -140,6 +118,28 @@ public class ProductoDAO implements IBaseDAO<Producto> {
         return null;
     }
 
+    // ---------------- BUSCAR POR NOMBRE ----------------
+    public Producto buscarPorNombre(String nombre) throws Exception {
+
+        String sql = "SELECT * FROM productos WHERE nombre LIKE ? AND eliminado = false";
+
+        try (Connection con = ConexionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, "%" + nombre + "%");
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                if (rs.next()) {
+                    return mapProducto(rs);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    // ---------------- LISTAR ----------------
     @Override
     public List<Producto> listarActivos() throws Exception {
 
@@ -152,35 +152,40 @@ public class ProductoDAO implements IBaseDAO<Producto> {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-
-                Producto p = new Producto();
-
-                p.setId(rs.getLong("id"));
-                p.setNombre(rs.getString("nombre"));
-                p.setPrecio(rs.getDouble("precio"));
-                p.setDescripcion(rs.getString("descripcion"));
-                p.setStock(rs.getInt("stock"));
-                p.setImagen(rs.getString("imagen"));
-                p.setDisponible(rs.getBoolean("disponible"));
-                p.setEliminado(rs.getBoolean("eliminado"));
-
-                Timestamp ts = rs.getTimestamp("created_at");
-                if (ts != null) {
-                    p.setCreatedAt(ts.toLocalDateTime());
-                }
-
-                long catId = rs.getLong("categoria_id");
-
-                if (!rs.wasNull()) {
-                    Categoria cat = new Categoria();
-                    cat.setId(catId);
-                    p.setCategoria(cat);
-                }
-
-                lista.add(p);
+                lista.add(mapProducto(rs));
             }
         }
 
         return lista;
+    }
+
+    // ---------------- MAPPER (IMPORTANTE) ----------------
+    private Producto mapProducto(ResultSet rs) throws Exception {
+
+        Producto p = new Producto();
+
+        p.setId(rs.getLong("id"));
+        p.setNombre(rs.getString("nombre"));
+        p.setPrecio(rs.getDouble("precio"));
+        p.setDescripcion(rs.getString("descripcion"));
+        p.setStock(rs.getInt("stock"));
+        p.setImagen(rs.getString("imagen"));
+        p.setDisponible(rs.getBoolean("disponible"));
+        p.setEliminado(rs.getBoolean("eliminado"));
+
+        Timestamp ts = rs.getTimestamp("created_at");
+        if (ts != null) {
+            p.setCreatedAt(ts.toLocalDateTime());
+        }
+
+        long catId = rs.getLong("categoria_id");
+
+        if (!rs.wasNull()) {
+            Categoria cat = new Categoria();
+            cat.setId(catId);
+            p.setCategoria(cat);
+        }
+
+        return p;
     }
 }
