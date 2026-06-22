@@ -12,12 +12,15 @@ public class Pedido extends Base implements Calculable {
     private FormaPago formaPago;
     private Usuario usuario;
 
-    private List<DetallePedido> listaDetallePedidos = new ArrayList<>();
+    private List<DetallePedido> listaDetallePedidos;
+
+    // ---------------- CONSTRUCTOR ----------------
 
     public Pedido() {
         super();
         this.fecha = LocalDate.now();
         this.estado = Estado.PENDIENTE;
+        this.listaDetallePedidos = new ArrayList<>();
     }
 
     public Pedido(LocalDate fecha, Estado estado, double total, FormaPago formaPago) {
@@ -26,6 +29,7 @@ public class Pedido extends Base implements Calculable {
         this.estado = estado;
         this.total = total;
         this.formaPago = formaPago;
+        this.listaDetallePedidos = new ArrayList<>();
     }
 
     // ---------------- GETTERS Y SETTERS ----------------

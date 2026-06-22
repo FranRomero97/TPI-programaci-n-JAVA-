@@ -44,36 +44,39 @@ public class MenuUsuario extends MenuBase {
     // ---------------- CREAR ----------------
     private void crearUsuario() {
 
-        limpiarConsola();
-        System.out.println("\n--- CREAR USUARIO ---");
+    limpiarConsola();
+    System.out.println("\n--- CREAR USUARIO ---");
 
-        try {
+    try {
 
-            String nombre = pedirTexto("Nombre");
-            String apellido = pedirTexto("Apellido");
-            String mail = pedirTexto("Mail");
-            String celular = pedirTexto("Celular");
-            String contraseña = pedirTexto("Contraseña");
+        String nombre = pedirTexto("Nombre");
+        String apellido = pedirTexto("Apellido");
+        String mail = pedirTexto("Mail");
+        String celular = pedirTexto("Celular");
+        String contraseña = pedirTexto("Contraseña");
 
-            Usuario u = new Usuario();
-            u.setNombre(nombre);
-            u.setApellido(apellido);
-            u.setMail(mail);
-            u.setCelular(celular);
-            u.setContraseña(contraseña);
-            u.setRol(Rol.USUARIO); // por defecto
-            u.setCreatedAt(LocalDateTime.now());
+        String rolInput = pedirTexto("Rol (ADMIN / USUARIO)");
 
-            usuarioService.guardarUsuario(u);
+        Usuario u = new Usuario();
 
-            System.out.println("Usuario creado correctamente.");
+        u.setNombre(nombre);
+        u.setApellido(apellido);
+        u.setMail(mail);
+        u.setCelular(celular);
+        u.setContraseña(contraseña);
+        u.setRol(Rol.valueOf(rolInput.toUpperCase()));
+        u.setCreatedAt(LocalDateTime.now());
 
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-        }
+        usuarioService.guardarUsuario(u);
 
-        pausar();
+        System.out.println("Usuario creado correctamente.");
+
+    } catch (Exception e) {
+        System.out.println("Error: " + e.getMessage());
     }
+
+    pausar();
+}
 
     // ---------------- LISTAR ----------------
     private void listarUsuarios() {

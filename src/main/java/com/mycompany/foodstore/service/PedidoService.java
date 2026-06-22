@@ -26,4 +26,8 @@ public class PedidoService {
     public void eliminarPedido(Long id) throws Exception {
         pedidoDAO.eliminarLogico(id);
     }
+
+    public List<Pedido> listarPorUsuario(Long idUsuario) throws Exception {
+    return pedidoDAO.listarPorUsuario(idUsuario);
+}
 }

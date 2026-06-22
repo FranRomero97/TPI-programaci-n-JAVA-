@@ -9,6 +9,8 @@ public class UsuarioService {
 
     private final UsuarioDAO usuarioDAO = new UsuarioDAO();
 
+    
+
     // ---------------- GUARDAR ----------------
     public void guardarUsuario(Usuario u) throws Exception {
 
@@ -46,4 +48,20 @@ public class UsuarioService {
     public void eliminarUsuario(Long id) throws Exception {
         usuarioDAO.eliminarLogico(id);
     }
+
+    // ---------------- LOGIN ----------------
+    public Usuario login(Long id, String contraseña) throws Exception {
+
+    Usuario usuario = usuarioDAO.buscarPorId(id);
+
+    if (usuario == null) {
+        return null;
+    }
+
+    if (!usuario.getContraseña().equals(contraseña)) {
+        return null;
+    }
+
+    return usuario;
+}
 }

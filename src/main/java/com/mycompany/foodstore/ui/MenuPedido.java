@@ -7,9 +7,13 @@ import java.util.List;
 
 public class MenuPedido extends MenuBase {
 
+    private Usuario usuarioLogueado;
     private final PedidoService pedidoService = new PedidoService();
-    private final UsuarioService usuarioService = new UsuarioService();
     private final ProductoService productoService = new ProductoService();
+
+    public MenuPedido(Usuario usuarioLogueado) {
+        this.usuarioLogueado = usuarioLogueado;
+    }
 
     @Override
     public void iniciar() {
@@ -27,7 +31,7 @@ public class MenuPedido extends MenuBase {
 
                 switch (op) {
                     case 1 -> crearPedido();
-                    case 2 -> listarPedidos();
+                    case 2 -> listarPedidosPorUsuario();
                     case 3 -> seleccionarMetodoPago();
                     case 4 -> eliminarPedido();
                     case 0 -> activo = false;
@@ -49,18 +53,10 @@ public class MenuPedido extends MenuBase {
 
         try {
 
-            Long userId = leerLong("ID usuario");
-
-            Usuario usuario = usuarioService.buscarPorId(userId);
-
-            if (usuario == null) {
-                System.out.println("Usuario no encontrado.");
-                pausar();
-                return;
-            }
-
             Pedido pedido = new Pedido();
-            pedido.setUsuario(usuario);
+
+            //  USUARIO LOGUEADO
+            pedido.setUsuario(usuarioLogueado);
 
             boolean agregar = true;
 
@@ -104,20 +100,20 @@ public class MenuPedido extends MenuBase {
     }
 
     // ---------------- LISTAR PEDIDOS ----------------
-    private void listarPedidos() {
+    private void listarPedidosPorUsuario() {
 
         limpiarConsola();
-        System.out.println("\n--- LISTAR PEDIDOS ---");
+        System.out.println("\n--- PEDIDOS DEL USUARIO ---");
 
         try {
 
-            List<Pedido> lista = pedidoService.listarPedidos();
+            List<Pedido> lista = pedidoService.listarPorUsuario(usuarioLogueado.getId());
 
             if (lista.isEmpty()) {
                 System.out.println("No hay pedidos.");
             } else {
 
-                System.out.println("====================================================");
+                System.out.println("======================================");
 
                 for (Pedido p : lista) {
 
@@ -125,12 +121,11 @@ public class MenuPedido extends MenuBase {
                             "ID: " + p.getId() +
                             " | FECHA: " + p.getFecha() +
                             " | ESTADO: " + p.getEstado() +
-                            " | TOTAL: " + p.getTotal() +
-                            " | USUARIO: " + (p.getUsuario() != null ? p.getUsuario().getId() : "N/A")
+                            " | TOTAL: " + p.getTotal()
                     );
                 }
 
-                System.out.println("====================================================");
+                System.out.println("======================================");
             }
 
         } catch (Exception e) {
@@ -140,7 +135,7 @@ public class MenuPedido extends MenuBase {
         pausar();
     }
 
-    // ---------------- PAGO ----------------
+    // ---------------- METODO DE PAGO ----------------
     private void seleccionarMetodoPago() {
 
         limpiarConsola();
@@ -151,9 +146,15 @@ public class MenuPedido extends MenuBase {
 
             int op = leerOpcion(0, 3);
 
-            if (op != 0) {
+            FormaPago fp = switch (op) {
+                case 1 -> FormaPago.EFECTIVO;
+                case 2 -> FormaPago.TARJETA;
+                case 3 -> FormaPago.TRANSFERENCIA;
+                default -> null;
+            };
 
-                System.out.println("Metodo seleccionado: " + op);
+            if (fp != null) {
+                System.out.println("Metodo seleccionado: " + fp);
             }
 
         } catch (Exception e) {
@@ -163,7 +164,7 @@ public class MenuPedido extends MenuBase {
         pausar();
     }
 
-    // ---------------- ELIMINAR ----------------
+    // ---------------- ELIMINAR PEDIDO ----------------
     private void eliminarPedido() {
 
         limpiarConsola();

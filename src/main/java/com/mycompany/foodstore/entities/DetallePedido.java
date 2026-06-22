@@ -1,8 +1,5 @@
 package com.mycompany.foodstore.entities;
 
-import com.mycompany.foodstore.entities.Base;
-import com.mycompany.foodstore.entities.Producto;
-
 public class DetallePedido extends Base {
     private int cantidad;
     private double subtotal;

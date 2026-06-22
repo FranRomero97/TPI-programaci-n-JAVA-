@@ -47,7 +47,7 @@ public class ProductoService {
         return productoDAO.listarActivos();
     }
 
-    // 🔥 VALIDACIÓN DE CATEGORÍA
+    //  VALIDACIÓN DE CATEGORÍA
     public Categoria validarCategoria(Long id) throws Exception {
 
         if (id == 0) return null;
