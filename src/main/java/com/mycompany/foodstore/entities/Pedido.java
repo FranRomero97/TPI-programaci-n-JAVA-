@@ -3,15 +3,16 @@ package com.mycompany.foodstore.entities;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import com.mycompany.foodstore.entities.Base;
-import com.mycompany.foodstore.entities.Producto;
 
 public class Pedido extends Base implements Calculable {
+
     private LocalDate fecha;
     private Estado estado;
     private double total;
     private FormaPago formaPago;
-    private List<DetallePedido> ListaDetallePedidos = new ArrayList<>();
+    private Usuario usuario;
+
+    private List<DetallePedido> listaDetallePedidos = new ArrayList<>();
 
     public Pedido() {
         super();
@@ -26,6 +27,8 @@ public class Pedido extends Base implements Calculable {
         this.total = total;
         this.formaPago = formaPago;
     }
+
+    // ---------------- GETTERS Y SETTERS ----------------
 
     public LocalDate getFecha() {
         return fecha;
@@ -59,45 +62,61 @@ public class Pedido extends Base implements Calculable {
         this.formaPago = formaPago;
     }
 
-    public List<DetallePedido> getListaDetallePedidos() {
-        return ListaDetallePedidos;
+    public Usuario getUsuario() {
+        return usuario;
     }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public List<DetallePedido> getListaDetallePedidos() {
+        return listaDetallePedidos;
+    }
+
+    // ---------------- LÓGICA ----------------
 
     @Override
     public void calcularTotal() {
         double suma = 0;
-        for (DetallePedido detalle : ListaDetallePedidos) {
+
+        for (DetallePedido detalle : listaDetallePedidos) {
             if (!detalle.isEliminado()) {
                 suma += detalle.getSubtotal();
             }
         }
+
         this.total = suma;
     }
 
     public void addDetallePedido(int cantidad, Producto producto) {
         if (producto != null) {
-            DetallePedido nuevoDetallePedido = new DetallePedido(cantidad, producto);
-            this.ListaDetallePedidos.add(nuevoDetallePedido);
+            DetallePedido nuevo = new DetallePedido(cantidad, producto);
+            this.listaDetallePedidos.add(nuevo);
             calcularTotal();
         }
     }
 
     public DetallePedido findeDetallePedidoByProducto(Producto producto) {
-        for (DetallePedido detalle : this.ListaDetallePedidos) {
+
+        for (DetallePedido detalle : this.listaDetallePedidos) {
             if (detalle.getProducto().getId().equals(producto.getId())) {
                 return detalle;
             }
         }
-        System.out.println("No se encontró un detalle de pedido con el producto ingresado."); 
+
+        System.out.println("No se encontró el producto en el pedido.");
         return null;
     }
-        
+
     public void deleteDetallePedidoByProducto(Producto producto) {
-        for (DetallePedido detalleEliminar : this.ListaDetallePedidos) {
-            if (detalleEliminar.getProducto().getId().equals(producto.getId())) {   
-                detalleEliminar.setEliminado(true);
+
+        for (DetallePedido detalle : this.listaDetallePedidos) {
+            if (detalle.getProducto().getId().equals(producto.getId())) {
+                detalle.setEliminado(true);
             }
         }
+
         calcularTotal();
     }
 }

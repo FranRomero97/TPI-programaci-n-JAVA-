@@ -2,121 +2,146 @@ package com.mycompany.foodstore.ui;
 
 import com.mycompany.foodstore.entities.Categoria;
 import com.mycompany.foodstore.service.CategoriaService;
+
 import java.util.List;
 
 public class MenuCategoria extends MenuBase {
-    
-    // 1. Instanciamos el servicio para poder usar la base de datos
+
     private final CategoriaService categoriaService = new CategoriaService();
 
     @Override
     public void iniciar() {
         boolean activo = true;
+
         while (activo) {
             limpiarConsola();
             System.out.println("\n--- GESTION DE CATEGORIAS ---");
-            System.out.println("1. Listar | 2. Crear | 3. Modificar | 4. Eliminar | 0. Volver");
+            System.out.println("1. Listar");
+            System.out.println("2. Crear");
+            System.out.println("3. Modificar");
+            System.out.println("4. Eliminar");
+            System.out.println("0. Volver");
+
             try {
                 int op = leerOpcion(0, 4);
+
                 switch (op) {
                     case 1 -> listarCategorias();
-                    case 2 -> crearCategoria(); 
+                    case 2 -> crearCategoria();
                     case 3 -> editarCategoria();
                     case 4 -> eliminarCategoria();
                     case 0 -> activo = false;
                 }
-            } catch (InvalidInputException e) { limpiarConsola(); System.out.println("Error: " + e.getMessage()); pausar(); }
+
+            } catch (InvalidInputException e) {
+                limpiarConsola();
+                System.out.println("Error: " + e.getMessage());
+                pausar();
+
+            } catch (Exception e) {
+                limpiarConsola();
+                System.out.println("Error inesperado: " + e.getMessage());
+                pausar();
+            }
         }
     }
 
-    // 2. CONECTADO: Método para insertar en la Base de Datos
-    private void crearCategoria() throws InvalidInputException {
+    // ---------------- CREAR ----------------
+    private void crearCategoria() {
         limpiarConsola();
-        System.out.println("\n--- CREAR NUEVA CATEGORÍA ---");
-        
-        String nombre = pedirTexto("Ingrese el nombre de la categoria");
-        String descripcion = pedirTexto("Ingrese la descripcion de la categoria");
-        
+        System.out.println("\n--- CREAR CATEGORIA ---");
+
         try {
-            Categoria nuevaCategoria = new Categoria();
-            nuevaCategoria.setNombre(nombre);
-            nuevaCategoria.setDescripcion(descripcion);
-            
-            // Llamamos al servicio para impactar en MySQL
-            categoriaService.guardarCategoria(nuevaCategoria);
-            
-            System.out.println("\n¡Categoría guardada con éxito en la Base de Datos! ID generado: " + nuevaCategoria.getId());
+            String nombre = pedirTexto("Nombre");
+            String descripcion = pedirTexto("Descripcion");
+
+            Categoria c = new Categoria();
+            c.setNombre(nombre);
+            c.setDescripcion(descripcion);
+
+            categoriaService.guardarCategoria(c);
+
+            System.out.println("Categoria creada correctamente.");
+
         } catch (Exception e) {
-            System.out.println("\nError al guardar en la base de datos: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
+
         pausar();
     }
 
-    // 3. CONECTADO: Método para traer y mostrar los registros reales
+    // ---------------- LISTAR ----------------
     private void listarCategorias() {
         limpiarConsola();
-        System.out.println("\n--- LISTAR CATEGORIAS ---");
-        System.out.println("1. Ver todas | 2. Buscar por nombre (Simulado) | 0. Volver");
+        System.out.println("\n--- LISTADO DE CATEGORIAS ---");
+
         try {
-            int subOp = leerOpcion(0, 2);
-            if (subOp == 1) {
-                limpiarConsola();
-                System.out.println("=== LISTADO DE CATEGORÍAS REALES ===");
-                
-                // Llamamos al servicio para traer la lista desde MySQL
-                List<Categoria> categorias = categoriaService.listarCategorias();
-                
-                if (categorias.isEmpty()) {
-                    System.out.println("No hay ninguna categoría cargada en la base de datos.");
-                } else {
-                    // Iteramos la lista e imprimimos los datos en una tablita prolija
-                    System.out.printf("%-5s | %-20s | %-30s\n", "ID", "NOMBRE", "DESCRIPCIÓN");
-                    System.out.println("------------------------------------------------------------------");
-                    for (Categoria cat : categorias) {
-                        System.out.printf("%-5d | %-20s | %-30s\n", cat.getId(), cat.getNombre(), cat.getDescripcion());
-                    }
+            List<Categoria> lista = categoriaService.listarCategorias();
+
+            if (lista.isEmpty()) {
+                System.out.println("No hay categorias.");
+            } else {
+                System.out.printf("%-5s | %-20s | %-30s\n", "ID", "NOMBRE", "DESCRIPCION");
+                System.out.println("------------------------------------------------------");
+
+                for (Categoria c : lista) {
+                    System.out.printf("%-5d | %-20s | %-30s\n",
+                            c.getId(),
+                            c.getNombre(),
+                            c.getDescripcion());
                 }
-                pausar();
-            } else if (subOp == 2) {
-                String nombre = pedirTexto("Ingrese el nombre de la categoria");
-                System.out.println("Buscando categorias con nombre: " + nombre);
-                pausar();
             }
+
         } catch (Exception e) {
-            limpiarConsola();
-            System.out.println("Error al conectar con la base de datos: " + e.getMessage());
-            pausar();
+            System.out.println("Error: " + e.getMessage());
         }
+
+        pausar();
     }
 
+    // ---------------- EDITAR ----------------
     private void editarCategoria() {
-        boolean editando = true;
-        while (editando) {
-            limpiarConsola();
-            System.out.println("\n--- EDITAR CATEGORIA ---");
-            System.out.println("1. Nombre | 2. Descripcion | 0. Guardar y Salir");
-            try {
-                int op = leerOpcion(0, 2);
-                if (op == 0) editando = false;
-                else { limpiarConsola(); System.out.println("Editando atributo " + op + "..."); pausar(); }
-            } catch (InvalidInputException e) { limpiarConsola(); System.out.println("Error: " + e.getMessage()); pausar(); }
+        limpiarConsola();
+        System.out.println("\n--- EDITAR CATEGORIA ---");
+
+        try {
+            Long id = leerLong("ID de la categoria");
+
+            Categoria c = categoriaService.buscarPorId(id);
+
+            String nuevoNombre = pedirTexto("Nuevo nombre");
+            String nuevaDescripcion = pedirTexto("Nueva descripcion");
+
+            c.setNombre(nuevoNombre);
+            c.setDescripcion(nuevaDescripcion);
+
+            categoriaService.actualizarCategoria(c);
+
+            System.out.println("Categoria actualizada.");
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
         }
+
+        pausar();
     }
 
-    // 4. CONECTADO: Eliminación lógica armada
+    // ---------------- ELIMINAR ----------------
     private void eliminarCategoria() {
         limpiarConsola();
-        System.out.println("\n--- ELIMINAR CATEGORÍA ---");
+        System.out.println("\n--- ELIMINAR CATEGORIA ---");
+
         try {
-            // Suponiendo que leerOpcion o una función similar te pide un entero largo
-            System.out.print("Ingrese el ID de la categoría a eliminar: ");
-            long id = new java.util.Scanner(System.in).nextLong();
-            
+            Long id = leerLong("ID de la categoria");
+
             categoriaService.eliminarCategoria(id);
-            System.out.println("\n¡Categoría marcada como eliminada con éxito!");
+
+            System.out.println("Categoria eliminada.");
+
         } catch (Exception e) {
-            System.out.println("Error al eliminar: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
+
         pausar();
     }
 }

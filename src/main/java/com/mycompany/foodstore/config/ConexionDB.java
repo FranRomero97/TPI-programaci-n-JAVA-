@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class ConexionDB {
     private static final String URL = "jdbc:mysql://localhost:3306/foodstore?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
     private static final String USER = "root";
-    private static final String PASSWORD ="123456789";
+    private static final String PASSWORD ="3006";
     
     public static Connection getConnection()throws SQLException{
         try{

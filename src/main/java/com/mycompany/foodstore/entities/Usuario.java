@@ -3,7 +3,6 @@ package com.mycompany.foodstore.entities;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import com.mycompany.foodstore.entities.Base;
 
 public class Usuario extends Base {
 
@@ -12,31 +11,34 @@ public class Usuario extends Base {
     private String mail;
     private String celular;
     private String contraseña;
-    private Rol rol; // Ya no necesita import si Rol está en el mismo paquete
+    private Rol rol;
     private List<Pedido> pedidos;
 
-    public Usuario(){
+    public Usuario() {
         super();
         this.pedidos = new ArrayList<>();
     }
 
     public Usuario(String nombre, String apellido, String mail,
                    String celular, String contraseña, Rol rol,
-                   Long ID, boolean eliminado, LocalDateTime createdAt) {
+                   Long id, boolean eliminado, LocalDateTime createdAt) {
 
-        super(); // Llama al constructor vacío de Base
-        this.setId(ID); // Setea el ID en la clase Base
-        this.setEliminado(eliminado); // Setea el estado eliminado en Base
-        this.setCreatedAt(createdAt); // Setea la fecha en Base
-        
+        super();
+        this.setId(id);
+        this.setEliminado(eliminado);
+        this.setCreatedAt(createdAt);
+
         this.nombre = nombre;
         this.apellido = apellido;
         this.mail = mail;
         this.celular = celular;
         this.contraseña = contraseña;
         this.rol = rol;
+
         this.pedidos = new ArrayList<>();
     }
+
+    // ---------------- GETTERS Y SETTERS ----------------
 
     public String getNombre() {
         return nombre;
@@ -95,6 +97,6 @@ public class Usuario extends Base {
     }
 
     public void addPedido(Pedido pedido) {
-        pedidos.add(pedido);
+        this.pedidos.add(pedido);
     }
 }

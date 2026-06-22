@@ -10,8 +10,8 @@ public class CategoriaDAO implements IBaseDAO<Categoria> {
 
     @Override
     public void guardar(Categoria categoria) throws Exception {
-        // CORREGIDO: categoria -> categorias
-        String sql = "INSERT INTO categorias (nombre, descripcion, eliminado, createdAt) VALUES (?, ?, ?, ?)";
+      
+        String sql = "INSERT INTO categorias (nombre, descripcion, eliminado, created_at) VALUES (?, ?, ?, ?)";
         
         // El Try-with-resources asegura que la conexión y el statement se cierren solos al terminar
         try (Connection con = ConexionDB.getConnection();
@@ -35,7 +35,7 @@ public class CategoriaDAO implements IBaseDAO<Categoria> {
 
     @Override
     public void actualizar(Categoria categoria) throws Exception {
-        // CORREGIDO: categoria -> categorias
+       
         String sql = "UPDATE categorias SET nombre = ?, descripcion = ? WHERE id = ? AND eliminado = false";
         
         try (Connection con = ConexionDB.getConnection();
@@ -49,10 +49,11 @@ public class CategoriaDAO implements IBaseDAO<Categoria> {
         }
     }
 
+    
     @Override
     public void eliminarLogico(Long id) throws Exception {
         // En lugar de borrar el registro, lo marcamos como eliminado
-        // CORREGIDO: categoria -> categorias
+  
         String sql = "UPDATE categorias SET eliminado = true WHERE id = ?";
         
         try (Connection con = ConexionDB.getConnection();
@@ -65,32 +66,33 @@ public class CategoriaDAO implements IBaseDAO<Categoria> {
 
     @Override
     public Categoria buscarPorId(Long id) throws Exception {
-        // CORREGIDO: categoria -> categorias
-        String sql = "SELECT * FROM categorias WHERE id = ? AND eliminado = false";
-        Categoria categoria = null;
-        
-        try (Connection con = ConexionDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            
-            ps.setLong(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    categoria = new Categoria();
-                    categoria.setId(rs.getLong("id"));
-                    categoria.setNombre(rs.getString("nombre"));
-                    categoria.setDescripcion(rs.getString("descripcion"));
-                    categoria.setEliminado(rs.getBoolean("eliminado"));
-                    categoria.setCreatedAt(rs.getTimestamp("createdAt").toLocalDateTime());
-                }
+
+    String sql = "SELECT * FROM categorias WHERE id = ? AND eliminado = false";
+
+    try (Connection con = ConexionDB.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setLong(1, id);
+
+        try (ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                Categoria c = new Categoria();
+                c.setId(rs.getLong("id"));
+                c.setNombre(rs.getString("nombre"));
+                c.setDescripcion(rs.getString("descripcion"));
+                return c;
             }
         }
-        return categoria;
     }
+
+    return null;
+}
 
     @Override
     public List<Categoria> listarActivos() throws Exception {
         List<Categoria> lista = new ArrayList<>();
-        // CORREGIDO: categoria -> categorias
+     
         String sql = "SELECT * FROM categorias WHERE eliminado = false";
         
         try (Connection con = ConexionDB.getConnection();
@@ -103,7 +105,7 @@ public class CategoriaDAO implements IBaseDAO<Categoria> {
                 c.setNombre(rs.getString("nombre"));
                 c.setDescripcion(rs.getString("descripcion"));
                 c.setEliminado(rs.getBoolean("eliminado"));
-                c.setCreatedAt(rs.getTimestamp("createdAt").toLocalDateTime());
+                c.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
                 lista.add(c);
             }
         }
