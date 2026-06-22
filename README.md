@@ -21,19 +21,29 @@ Antes de comenzar, asegúrate de tener instalado:
 El sistema utiliza una base de datos local en MySQL. Sigue estos pasos para inicializar la estructura:
 
 1. Abre **MySQL Workbench** y conéctate a tu servidor local.
+   
 2. Crea una nueva pestaña de consultas (Query Tab).
+
 3. Pega y ejecuta el script de base de datos
+
 4. Una vez creada la base de datos mire la tabla usuarios
 ahi encontrara un usuario admin creado por defecto con el cual
-usted ingresara en el progra y obtendra el acceso total al programa
-5. si desea ingresar como usuario para corroborar que estos no tengo
-acceso total y asi no poder modificar nunca tabla de producto o de categorias
-puedo hacerlo creando un nuevo usuario el cual unicamente dejara que dicho
-usuario cree pedidos
-6. Dentro del IDE seleccionado para ejecutar el proyecto usted debera hacerle click derecho
-a la carpeta razin del poryecto y hacer click en clean and build para que se instalen todas las depencias necesarias
-7. una vez realizado el paso 6 ustedes debera buscar la carpeta "com.mycompany.foodstore" el archivo dentro
-de esa usted le hara click derecho y le hara click a al opcion que dice run file
+usted ingresara en el programa y obtendra el acceso total al programa
+
+5. Dentro del IDE seleccionado para ejecutar el proyecto usted debera
+hacerle click derecho a la carpeta razin del poryecto y hacer click
+en clean and build para que se instalen todas las depencias necesarias
+
+6.Ahora debera ir a la segunda carpeta ubicada dentro del programa llamada "com.mycompany.foodstore"
+le hara doble al archivo que hay ahi dentro y en las lineas 8 y 9 del codigo usted debera colar
+dentro de las comillas su usuario y contrasena en las respectivas lienas cada informacion
+
+7. una vez realizado el paso 6 ustedes debera buscar la carpeta "com.mycompany.foodstore"
+al archivo dentro de esa carpeta usted le hara click derecho y le hara click a al opcion que dice "run file"
+
+8. si desea ingresar como usuario para corroborar que estos no tengan
+acceso total y asi no poder modificar ninguna tabla puede hacerlo creando
+un nuevo usuario el cual unicamente podra crear pedidos
 
 ```sql
 -- Crear la base de datos
