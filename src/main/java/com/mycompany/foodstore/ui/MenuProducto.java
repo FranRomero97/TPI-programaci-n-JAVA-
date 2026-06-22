@@ -28,10 +28,10 @@ public class MenuProducto extends MenuBase {
 
                 switch (op) {
                     case 1 -> listarProductos();
-                    case 2 -> crearProducto();   // 🔥 FIX
+                    case 2 -> crearProducto();   
                     case 3 -> editarProducto();
                     case 4 -> gestionarStock();
-                    case 5 -> eliminarProducto(); // 🔥 FIX
+                    case 5 -> eliminarProducto(); 
                     case 0 -> activo = false;
                 }
 
@@ -104,9 +104,8 @@ public class MenuProducto extends MenuBase {
                     " | NOMBRE: " + p.getNombre() +
                     " | DESCRIPCION: " + p.getDescripcion() +
                     " | PRECIO: " + p.getPrecio() +
-                    " | STOCK: " + p.getStock() +
-                    " | CATEGORIA_ID: " +
-                    (p.getCategoria() != null ? p.getCategoria().getId() : "SIN CATEGORIA")
+                    " | STOCK: " + p.getStock() 
+                    
             );
         }
 
